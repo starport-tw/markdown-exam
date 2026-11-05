@@ -88,6 +88,7 @@
   ol.req { margin: 0 0 14px; padding-left: 1.5em; }
   ol.req li { margin: 4px 0; }
   ol.req ul { margin: 2px 0; padding-left: 1.2em; }
+  .ipts { color: var(--accent); font-weight: 700; white-space: nowrap; }
   .lit {
     background: var(--accent-soft); border-radius: 4px; padding: 0 5px;
     font-weight: 600; word-break: break-all;
@@ -145,7 +146,7 @@
 <div class="wrap">
   <header class="top">
     <h1 id="examTitle">Markdown 語法測驗</h1>
-    <p id="examSub">共 5 題，每題 5 分，滿分 25 分</p>
+    <p id="examSub">共 5 題，滿分 25 分</p>
   </header>
 
   <section class="card notice" aria-label="作答說明">
@@ -175,111 +176,100 @@
   <div class="bar-inner">
     <span class="status" id="status">尚未開始作答</span>
     <button type="button" class="ghost" id="btnClear">清除全部</button>
-    <button type="button" id="btnCopy">複製作答內容</button>
-    <button type="button" id="btnJson">下載 JSON</button>
     <button type="button" class="primary" id="btnMd">下載作答檔</button>
   </div>
 </div>
 
 <script>
 /* ====================================================================
- * 測驗設定：老師要改題目，只需要修改這一段。
- * - id：題目代號（匯出檔與暫存用，改題目時請一併改掉，避免舊暫存混入）
- * - text：題目要求的 HTML（<span class="lit">…</span> 標示要照打的文字）
- * - plain：匯出檔裡的純文字題目（給人工或 AI 批改時閱讀）
+ * 測驗設定：老師要改題目或配分，只需要修改這一段。
+ * - key：暫存用代號。換一份新考題時請改掉，避免舊暫存混入。
+ * - 每一小題 items：
+ *     html：網頁顯示的題目（<span class="lit">…</span> 標示要照打的文字）
+ *     plain：匯出檔裡的純文字題目（給人工或 AI 批改時閱讀）
+ *     pts：這一小題的配分（大題分數與總分會自動加總）
+ * - notes：大題的補充要求（只列在匯出檔，不另外配分）
  * ==================================================================== */
 const EXAM = {
   key: "markdown-exam-2026-v1",
   title: "Markdown 語法測驗",
-  subtitle: "共 5 題，每題 5 分，滿分 25 分",
   questions: [
     {
       id: "q1",
       title: "第 1 題　標題與段落",
-      points: 5,
       intro: "請用 Markdown 寫出下面這份文件，由上到下依序為：",
       items: [
-        '一級標題：<span class="lit">我的學習計畫</span>',
-        '二級標題：<span class="lit">目標和方法</span>',
-        '三級標題：<span class="lit">數學</span>',
-        '三級標題下面寫一段文字：<span class="lit">我想提升我的數學能力，特別是微積分。</span>其中「微積分」要用<strong>粗體</strong>。'
-      ],
-      plain: [
-        "一級標題：我的學習計畫",
-        "二級標題：目標和方法",
-        "三級標題：數學",
-        "三級標題下面寫一段文字：我想提升我的數學能力，特別是微積分。其中「微積分」要用粗體。"
+        { pts: 1, html: '一級標題：<span class="lit">我的學習計畫</span>',
+          plain: "一級標題：我的學習計畫" },
+        { pts: 1, html: '二級標題：<span class="lit">目標和方法</span>',
+          plain: "二級標題：目標和方法" },
+        { pts: 1, html: '三級標題：<span class="lit">數學</span>',
+          plain: "三級標題：數學" },
+        { pts: 1, html: '在剛才第 3 小題的三級標題下面寫一段文字：<span class="lit">我想提升我的數學能力，特別是微積分。</span>其中「微積分」要用<strong>粗體</strong>。',
+          plain: "在剛才第 3 小題的三級標題下面寫一段文字：我想提升我的數學能力，特別是微積分。其中「微積分」要用粗體。" }
       ]
     },
     {
       id: "q2",
       title: "第 2 題　文字樣式",
-      points: 5,
       intro: "請寫出下面兩段文字，並加上指定的樣式。兩段文字要分開顯示（不能黏成同一段）。",
       items: [
-        '第一段：<span class="lit">這是一個非常重要的專案，我需要找出關鍵步驟。</span><ul><li>「重要」用<strong>粗體</strong></li><li>「關鍵」用<em>斜體</em></li><li>「專案」用<strong><em>粗斜體</em></strong></li></ul>',
-        '第二段：<span class="lit">已完成：撰寫報告，記得用 print 輸出結果。</span><ul><li>「撰寫報告」加上<s>刪除線</s></li><li>「print」用<strong>行內程式碼</strong>（行內註解）標示</li></ul>'
+        { pts: 3, html: '第一段：<span class="lit">這是一個非常重要的專案，我需要找出關鍵步驟。</span><ul><li>「重要」用<strong>粗體</strong></li><li>「關鍵」用<em>斜體</em></li><li>「專案」用<strong><em>粗斜體</em></strong></li></ul>',
+          plain: "第一段：這是一個非常重要的專案，我需要找出關鍵步驟。「重要」用粗體、「關鍵」用斜體、「專案」用粗斜體。" },
+        { pts: 2, html: '第二段：<span class="lit">已完成：撰寫報告，記得用 print 輸出結果。</span><ul><li>「撰寫報告」加上<s>刪除線</s></li><li>「print」用<strong>行內程式碼</strong>（行內註解）標示</li></ul>',
+          plain: "第二段：已完成：撰寫報告，記得用 print 輸出結果。「撰寫報告」加上刪除線、「print」用行內程式碼（行內註解）標示。" }
       ],
-      plain: [
-        "第一段：這是一個非常重要的專案，我需要找出關鍵步驟。「重要」用粗體、「關鍵」用斜體、「專案」用粗斜體。",
-        "第二段：已完成：撰寫報告，記得用 print 輸出結果。「撰寫報告」加上刪除線、「print」用行內程式碼（行內註解）標示。",
-        "兩段文字要分開顯示，不能黏成同一段。"
-      ]
+      notes: ["兩段文字要分開顯示，不能黏成同一段。"]
     },
     {
       id: "q3",
       title: "第 3 題　清單",
-      points: 5,
       intro: "請依序寫出下面三組清單：",
       items: [
-        '先寫一行文字 <span class="lit">購物清單：</span>，下面用<strong>無序清單</strong>列出：牛奶、麵包、雞蛋。<br>其中「麵包」底下要再縮排一層子清單：全麥吐司、法國麵包。',
-        '寫一行文字 <span class="lit">步驟：</span>，下面用<strong>有序清單（自動編號）</strong>列出：準備食材、開始烹飪、擺盤、享用美食。',
-        '寫一行文字 <span class="lit">今日任務：</span>，下面用<strong>任務清單</strong>列出：吃飯（已完成，要打勾）、睡覺（未完成）、玩遊戲（未完成）。'
-      ],
-      plain: [
-        "一行文字「購物清單：」，下面用無序清單列出：牛奶、麵包、雞蛋；「麵包」底下再縮排一層子清單：全麥吐司、法國麵包。",
-        "一行文字「步驟：」，下面用有序清單（自動編號）列出：準備食材、開始烹飪、擺盤、享用美食。",
-        "一行文字「今日任務：」，下面用任務清單列出：吃飯（已完成，要打勾）、睡覺（未完成）、玩遊戲（未完成）。"
+        { pts: 2, html: '先寫一行文字 <span class="lit">購物清單：</span>，下面用<strong>無序清單</strong>列出：牛奶、麵包、雞蛋。<br>其中「麵包」底下要再縮排一層子清單：全麥吐司、法國麵包。',
+          plain: "一行文字「購物清單：」，下面用無序清單列出：牛奶、麵包、雞蛋；「麵包」底下再縮排一層子清單：全麥吐司、法國麵包。" },
+        { pts: 1, html: '寫一行文字 <span class="lit">步驟：</span>，下面用<strong>有序清單（自動編號）</strong>列出：準備食材、開始烹飪、擺盤、享用美食。',
+          plain: "一行文字「步驟：」，下面用有序清單（自動編號）列出：準備食材、開始烹飪、擺盤、享用美食。" },
+        { pts: 2, html: '寫一行文字 <span class="lit">今日任務：</span>，下面用<strong>任務清單</strong>列出：吃飯（已完成，要打勾）、睡覺（未完成）、玩遊戲（未完成）。',
+          plain: "一行文字「今日任務：」，下面用任務清單列出：吃飯（已完成，要打勾）、睡覺（未完成）、玩遊戲（未完成）。" }
       ]
     },
     {
       id: "q4",
       title: "第 4 題　連結、圖片與註腳",
-      points: 5,
       intro: "請寫出下面四項內容，每一項各自成一段：",
       items: [
-        '文字超連結：畫面上顯示 <span class="lit">Google</span>，點下去連到 <span class="lit">https://www.google.com</span>',
-        '直接顯示網址：<span class="lit">https://hackmd.io/</span>',
-        '插入網路圖片：圖片網址 <span class="lit">https://picsum.photos/300/200</span>，替代文字為 <span class="lit">隨機圖片</span>，額外說明為 <span class="lit">測試貼圖</span>',
-        '寫出文字 <span class="lit">上課規範</span>，在後面加上<strong>註腳</strong>，註腳的內容是 <span class="lit">上課不准吃東西</span>'
-      ],
-      plain: [
-        "文字超連結：畫面上顯示「Google」，點下去連到 https://www.google.com",
-        "直接顯示網址：https://hackmd.io/",
-        "插入網路圖片：圖片網址 https://picsum.photos/300/200，替代文字為「隨機圖片」，額外說明為「測試貼圖」",
-        "寫出文字「上課規範」，在後面加上註腳，註腳的內容是「上課不准吃東西」"
+        { pts: 1, html: '文字超連結：畫面上顯示 <span class="lit">Google</span>，點下去連到 <span class="lit">https://www.google.com</span>',
+          plain: "文字超連結：畫面上顯示「Google」，點下去連到 https://www.google.com" },
+        { pts: 1, html: '直接顯示網址：<span class="lit">https://hackmd.io/</span>',
+          plain: "直接顯示網址：https://hackmd.io/" },
+        { pts: 2, html: '插入網路圖片：圖片網址 <span class="lit">https://picsum.photos/300/200</span>，替代文字為 <span class="lit">隨機圖片</span>，額外說明為 <span class="lit">測試貼圖</span>',
+          plain: "插入網路圖片：圖片網址 https://picsum.photos/300/200，替代文字為「隨機圖片」，額外說明為「測試貼圖」" },
+        { pts: 2, html: '寫出文字 <span class="lit">上課規範</span>，在後面加上<strong>註腳</strong>，註腳的內容是 <span class="lit">上課不准吃東西</span>',
+          plain: "寫出文字「上課規範」，在後面加上註腳，註腳的內容是「上課不准吃東西」" }
       ]
     },
     {
       id: "q5",
       title: "第 5 題　引用、分隔線與程式碼區塊",
-      points: 5,
       intro: "請依序寫出下面四項內容：",
       items: [
-        '引用區塊，內容為 <span class="lit">學習 Markdown 是一種投資，因為它能讓你的文件更專業。</span>',
-        '在上面的引用裡面，再加一層<strong>子引用區塊</strong>，內容為 <span class="lit">出自 Markdown 上課講義</span>',
-        '一條<strong>水平分隔線</strong>',
-        '一個標明語言為 <span class="lit">python</span> 的<strong>程式碼區塊</strong>，內容為 <span class="lit">print("Hello, Markdown!")</span>'
-      ],
-      plain: [
-        "引用區塊，內容為「學習 Markdown 是一種投資，因為它能讓你的文件更專業。」",
-        "在上面的引用裡面，再加一層子引用區塊，內容為「出自 Markdown 上課講義」",
-        "一條水平分隔線",
-        "一個標明語言為 python 的程式碼區塊，內容為 print(\"Hello, Markdown!\")"
+        { pts: 1, html: '引用區塊，內容為 <span class="lit">學習 Markdown 是一種投資，因為它能讓你的文件更專業。</span>',
+          plain: "引用區塊，內容為「學習 Markdown 是一種投資，因為它能讓你的文件更專業。」" },
+        { pts: 1, html: '在上面的引用裡面，再加一層<strong>子引用區塊</strong>，內容為 <span class="lit">出自 Markdown 上課講義</span>',
+          plain: "在上面的引用裡面，再加一層子引用區塊，內容為「出自 Markdown 上課講義」" },
+        { pts: 1, html: '一條<strong>水平分隔線</strong>',
+          plain: "一條水平分隔線" },
+        { pts: 2, html: '一個標明語言為 <span class="lit">python</span> 的<strong>程式碼區塊</strong>，內容為 <span class="lit">print("Hello, Markdown!")</span>',
+          plain: "一個標明語言為 python 的程式碼區塊，內容為 print(\"Hello, Markdown!\")" }
       ]
     }
   ]
 };
+// 大題分數 = 各小題配分加總
+EXAM.questions.forEach((q) => { q.points = q.items.reduce((s, it) => s + it.pts, 0); });
+EXAM.total = EXAM.questions.reduce((s, q) => s + q.points, 0);
+EXAM.subtitle = "共 " + EXAM.questions.length + " 題，滿分 " + EXAM.total + " 分（每一小題的配分標示在題目後方）";
 </script>
 
 <script>
@@ -317,7 +307,11 @@ const EXAM = {
     sec.innerHTML =
       '<div class="q-head"><h2 id="' + q.id + '-h">' + q.title + '</h2><span class="pts">' + q.points + ' 分</span></div>' +
       '<p class="q-intro">' + q.intro + '</p>' +
-      '<ol class="req">' + q.items.map((t) => "<li>" + t + "</li>").join("") + "</ol>" +
+      '<ol class="req">' + q.items.map((it) => {
+        const tag = ' <span class="ipts">（' + it.pts + ' 分）</span>';
+        const i = it.html.indexOf("<ul>");
+        return "<li>" + (i < 0 ? it.html + tag : it.html.slice(0, i) + tag + it.html.slice(i)) + "</li>";
+      }).join("") + "</ol>" +
       '<textarea id="' + q.id + '" spellcheck="false" autocapitalize="off" autocomplete="off" aria-labelledby="' + q.id + '-h"></textarea>' +
       '<div class="meta"><span>Markdown 原始語法</span><span id="' + q.id + '-count">0 字</span></div>';
     host.appendChild(sec);
@@ -420,7 +414,7 @@ const EXAM = {
   }
   function buildMarkdown() {
     const exported = new Date().toISOString();
-    const total = EXAM.questions.reduce((s, q) => s + q.points, 0);
+    const total = EXAM.total;
     const L = [];
     L.push("# " + EXAM.title + "｜作答紀錄", "");
     L.push("| 項目 | 內容 |", "| --- | --- |");
@@ -438,7 +432,8 @@ const EXAM = {
       L.push("---", "");
       L.push("## " + q.title.replace(/　/g, " ") + "（" + q.points + " 分）", "");
       L.push("**題目要求**", "");
-      q.plain.forEach((t, i) => L.push((i + 1) + ". " + t));
+      q.items.forEach((it, i) => L.push((i + 1) + ". " + it.plain + " （" + it.pts + " 分）"));
+      (q.notes || []).forEach((t) => L.push("- 補充要求：" + t));
       L.push("", "**學生作答**", "");
       if (ans.trim() === "") {
         L.push("（未作答）");
@@ -448,19 +443,6 @@ const EXAM = {
       L.push("", "字數：" + Array.from(ans).length + "　貼上次數：" + (state.paste[q.id] || 0), "");
     });
     return L.join("\n");
-  }
-  function buildJson() {
-    return JSON.stringify({
-      exam: EXAM.title,
-      examKey: EXAM.key,
-      student: { class: state.student.cls.trim(), id: state.student.id.trim(), name: state.student.name.trim() },
-      startedAt: state.startedAt,
-      exportedAt: new Date().toISOString(),
-      questions: EXAM.questions.map((q) => ({
-        id: q.id, title: q.title.replace(/　/g, " "), points: q.points,
-        requirements: q.plain, answer: state.answers[q.id] || "", pasteCount: state.paste[q.id] || 0
-      }))
-    }, null, 2);
   }
   function safeName(s) { return s.trim().replace(/[\\/:*?"<>|\s]+/g, "_"); }
   function download(content, ext, mime) {
@@ -483,25 +465,6 @@ const EXAM = {
     const name = download(buildMarkdown(), "md", "text/markdown");
     dirtySinceExport = false;
     showMsg("已下載「" + name + "」，請把這個檔案交給老師。" + warnEmpty(), "ok");
-  });
-  $("btnJson").addEventListener("click", () => {
-    if (!requireStudent()) return;
-    const name = download(buildJson(), "json", "application/json");
-    dirtySinceExport = false;
-    showMsg("已下載「" + name + "」。" + warnEmpty(), "ok");
-  });
-  $("btnCopy").addEventListener("click", async () => {
-    if (!requireStudent()) return;
-    const text = buildMarkdown();
-    let ok = false;
-    try { await navigator.clipboard.writeText(text); ok = true; } catch (e) {
-      const t = document.createElement("textarea");
-      t.value = text; t.style.position = "fixed"; t.style.opacity = "0";
-      document.body.appendChild(t); t.select();
-      try { ok = document.execCommand("copy"); } catch (e2) { ok = false; }
-      t.remove();
-    }
-    showMsg(ok ? "已複製作答內容，可以貼到老師指定的地方。" + warnEmpty() : "無法自動複製，請改用「下載作答檔」。", ok ? "ok" : "err");
   });
   $("btnClear").addEventListener("click", () => {
     if (!confirm("確定要清除全部作答內容嗎？清除後無法復原。")) return;

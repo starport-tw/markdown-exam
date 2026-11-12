@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Markdown 語法測驗（B 卷）</title>
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --surface: #ffffff;
+    --surface-2: #f0f3f6;
+    --text: #1d2228;
+    --muted: #5d6773;
+    --line: #d9dee4;
+    --accent: #1f6f5c;
+    --accent-soft: #e3f1ec;
+    --warn: #b4441f;
+    --warn-soft: #fbece6;
+    --code-bg: #1f2429;
+    --code-text: #e8ecef;
+    --focus: #2f8f76;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14181c;
+      --surface: #1c2126;
+      --surface-2: #232a30;
+      --text: #e6eaee;
+      --muted: #9aa5b1;
+      --line: #313a42;
+      --accent: #5cc4a6;
+      --accent-soft: #1f3530;
+      --warn: #f08a66;
+      --warn-soft: #3a2620;
+      --code-bg: #0f1215;
+      --code-text: #e8ecef;
+      --focus: #5cc4a6;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14181c;
+    --surface: #1c2126;
+    --surface-2: #232a30;
+    --text: #e6eaee;
+    --muted: #9aa5b1;
+    --line: #313a42;
+    --accent: #5cc4a6;
+    --accent-soft: #1f3530;
+    --warn: #f08a66;
+    --warn-soft: #3a2620;
+    --code-bg: #0f1215;
+    --code-text: #e8ecef;
+    --focus: #5cc4a6;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", "Heiti TC", system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 32px 16px 120px; }
+  header.top h1 { margin: 0 0 4px; font-size: 28px; letter-spacing: .02em; }
+  header.top p { margin: 0; color: var(--muted); }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-top: 20px;
+  }
+  .notice { background: var(--surface-2); }
+  .notice ul { margin: 6px 0 0; padding-left: 1.3em; }
+  .notice li { margin: 2px 0; }
+  .student { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .student label { display: block; font-size: 14px; color: var(--muted); margin-bottom: 4px; }
+  .student input {
+    width: 100%; font: inherit; color: var(--text); background: var(--surface);
+    border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px;
+  }
+  .q-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .q-head h2 { margin: 0; font-size: 20px; }
+  .q-head .pts { color: var(--accent); font-weight: 700; white-space: nowrap; }
+  .q-intro { margin: 8px 0 6px; }
+  ol.req { margin: 0 0 14px; padding-left: 1.5em; }
+  ol.req li { margin: 4px 0; }
+  ol.req ul { margin: 2px 0; padding-left: 1.2em; }
+  .ipts { color: var(--accent); font-weight: 700; white-space: nowrap; }
+  .lit {
+    background: var(--accent-soft); border-radius: 4px; padding: 0 5px;
+    font-weight: 600; word-break: break-all;
+  }
+  code {
+    font-family: Consolas, "Courier New", ui-monospace, monospace;
+    background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 4px; padding: 0 4px; font-size: .92em;
+  }
+  textarea {
+    width: 100%; min-height: 220px; resize: vertical;
+    font-family: Consolas, Menlo, "Cascadia Mono", "DejaVu Sans Mono", "Noto Sans Mono", "Courier New", "Microsoft JhengHei", "PingFang TC", ui-monospace, monospace;
+    font-size: 15px; line-height: 1.6;
+    color: var(--code-text); background: var(--code-bg);
+    border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px;
+    tab-size: 4;
+  }
+  textarea:focus, .student input:focus, button:focus-visible {
+    outline: 2px solid var(--focus); outline-offset: 2px;
+  }
+  .meta { display: flex; justify-content: space-between; color: var(--muted); font-size: 13px; margin-top: 6px; }
+  .bar {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    background: var(--surface); border-top: 1px solid var(--line);
+    padding: 10px 16px;
+  }
+  .bar-inner { max-width: 860px; margin: 0 auto; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .bar .status { flex: 1 1 200px; color: var(--muted); font-size: 14px; }
+  button {
+    font: inherit; font-size: 15px; border-radius: 8px; padding: 8px 16px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--surface); color: var(--text);
+  }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
+  :root[data-theme="dark"] button.primary { color: #0f1a17; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) button.primary { color: #0f1a17; } }
+  button.ghost { color: var(--warn); }
+  .msg { margin-top: 14px; padding: 10px 14px; border-radius: 8px; display: none; }
+  .msg.show { display: block; }
+  .msg.err { background: var(--warn-soft); color: var(--warn); }
+  .msg.ok { background: var(--accent-soft); color: var(--accent); }
+  @media (max-width: 640px) {
+    .wrap { padding-top: 20px; }
+    header.top h1 { font-size: 24px; }
+    .student { grid-template-columns: 1fr; }
+    .card { padding: 16px; }
+    .bar { padding: 8px 12px; }
+    .bar-inner { gap: 8px; }
+    .bar .status { flex-basis: 100%; font-size: 12px; line-height: 1.3; }
+    .bar-inner button { flex: 1 1 40%; font-size: 14px; padding: 7px 8px; }
+    .wrap { padding-bottom: 160px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1 id="examTitle">Markdown 語法測驗（B 卷）</h1>
+    <p id="examSub"></p>
+  </header>
+
+  <section class="card notice" aria-label="作答說明">
+    <strong>作答說明</strong>
+    <ul>
+      <li>請在每題的黑色作答框中，直接輸入 Markdown 原始語法。本頁不會顯示排版後的樣子。</li>
+      <li>需要縮排（例如子清單）時，可以按 <code>Tab</code> 鍵插入 4 個空白。</li>
+      <li>作答內容會自動暫存在這台電腦的瀏覽器中，重新整理頁面不會消失；但換電腦或清除瀏覽紀錄後就會不見。</li>
+      <li>寫完後請按最下方的「<strong>下載作答檔</strong>」，把下載的 <code>.md</code> 檔案交給老師。</li>
+    </ul>
+  </section>
+
+  <section class="card" aria-label="學生資料">
+    <div class="student">
+      <div><label for="sClass">班級</label><input id="sClass" autocomplete="off"></div>
+      <div><label for="sId">學號 *</label><input id="sId" autocomplete="off"></div>
+      <div><label for="sName">姓名 *</label><input id="sName" autocomplete="off"></div>
+    </div>
+  </section>
+
+  <main id="questions"></main>
+
+  <div id="msg" class="msg" role="status"></div>
+</div>
+
+<div class="bar">
+  <div class="bar-inner">
+    <span class="status" id="status">尚未開始作答</span>
+    <button type="button" class="ghost" id="btnClear">清除全部</button>
+    <button type="button" class="primary" id="btnMd">下載作答檔</button>
+  </div>
+</div>
+
+<script>
+/* ====================================================================
+ * 測驗設定：老師要改題目或配分，只需要修改這一段。
+ * - key：暫存用代號。換一份新考題時請改掉，避免舊暫存混入。
+ * - 每一小題 items：
+ *     html：網頁顯示的題目（<span class="lit">…</span> 標示要照打的文字）
+ *     plain：匯出檔裡的純文字題目（給人工或 AI 批改時閱讀）
+ *     pts：這一小題的配分（大題分數與總分會自動加總）
+ * - notes：大題的補充要求（只列在匯出檔，不另外配分）
+ * ==================================================================== */
+const EXAM = {
+  key: "markdown-exam-2026-b-v1",
+  title: "Markdown 語法測驗（B 卷）",
+  fileTag: "Markdown測驗B卷",
+  questions: [
+    {
+      id: "q1",
+      title: "第 1 題　標題與文字樣式",
+      intro: "請用 Markdown 寫出下面這份文件，由上到下依序為：",
+      items: [
+        { pts: 1, html: '二級標題：<span class="lit">社團活動報告</span>',
+          plain: "二級標題：社團活動報告" },
+        { pts: 1, html: '四級標題：<span class="lit">活動結果</span>',
+          plain: "四級標題：活動結果" },
+        { pts: 3, html: '在剛才第 2 小題的四級標題下面寫一段文字：<span class="lit">本次活動非常成功，參加人數創新高，原訂的戶外烤肉改成室內聚餐。</span><ul><li>「非常成功」用<strong>粗體</strong></li><li>「創新高」用<strong><em>粗斜體</em></strong></li><li>「戶外烤肉」加上<s>刪除線</s></li></ul>',
+          plain: "在剛才第 2 小題的四級標題下面寫一段文字：本次活動非常成功，參加人數創新高，原訂的戶外烤肉改成室內聚餐。「非常成功」用粗體、「創新高」用粗斜體、「戶外烤肉」加上刪除線。" }
+      ]
+    },
+    {
+      id: "q2",
+      title: "第 2 題　清單與分隔線",
+      intro: "請依序寫出下面四項內容：",
+      items: [
+        { pts: 1, html: '先寫一行文字 <span class="lit">準備物品：</span>，下面用<strong>無序清單</strong>列出：筆電、充電器、筆記本。',
+          plain: "一行文字「準備物品：」，下面用無序清單列出：筆電、充電器、筆記本。" },
+        { pts: 2, html: '寫一行文字 <span class="lit">報告流程：</span>，下面用<strong>有序清單（自動編號）</strong>列出：開場介紹、成果展示、問答時間。<br>其中「成果展示」底下要再縮排一層<strong>無序</strong>子清單：照片、影片。',
+          plain: "一行文字「報告流程：」，下面用有序清單（自動編號）列出：開場介紹、成果展示、問答時間；「成果展示」底下再縮排一層無序子清單：照片、影片。" },
+        { pts: 1, html: '一條<strong>水平分隔線</strong>',
+          plain: "一條水平分隔線" },
+        { pts: 1, html: '寫一行文字 <span class="lit">檢查清單：</span>，下面用<strong>任務清單</strong>列出：場地借用（已完成）、海報製作（已完成）、器材測試（未完成）。',
+          plain: "一行文字「檢查清單：」，下面用任務清單列出：場地借用（已完成）、海報製作（已完成）、器材測試（未完成）。" }
+      ]
+    },
+    {
+      id: "q3",
+      title: "第 3 題　連結與圖片",
+      intro: "請寫出下面三項內容，每一項各自成一段：",
+      items: [
+        { pts: 2, html: '文字超連結：畫面上顯示 <span class="lit">社團官網</span>，點下去連到 <span class="lit">https://example.com</span>，並加上額外說明 <span class="lit">點我前往官網</span>（滑鼠移到連結上時會顯示）',
+          plain: "文字超連結：畫面上顯示「社團官網」，點下去連到 https://example.com ，並加上額外說明「點我前往官網」（滑鼠移到連結上時會顯示）" },
+        { pts: 1, html: '插入網路圖片：圖片網址 <span class="lit">https://picsum.photos/200/150</span>，替代文字為 <span class="lit">活動照片</span>',
+          plain: "插入網路圖片：圖片網址 https://picsum.photos/200/150 ，替代文字為「活動照片」" },
+        { pts: 2, html: '<strong>圖片超連結</strong>：把第 2 小題的同一張圖片（替代文字一樣是 <span class="lit">活動照片</span>）做成超連結，點圖片會連到 <span class="lit">https://example.com/album</span>',
+          plain: "圖片超連結：把第 2 小題的同一張圖片（替代文字一樣是「活動照片」）做成超連結，點圖片會連到 https://example.com/album" }
+      ]
+    },
+    {
+      id: "q4",
+      title: "第 4 題　引用、程式碼與註腳",
+      intro: "請依序寫出下面四項內容，每一項各自成一段：",
+      items: [
+        { pts: 1, html: '引用區塊，內容為 <span class="lit">團結就是力量。</span>',
+          plain: "引用區塊，內容為「團結就是力量。」" },
+        { pts: 1, html: '寫一句話 <span class="lit">請在終端機輸入 git status 查看狀態。</span>，其中「git status」用<strong>行內程式碼</strong>（行內註解）標示',
+          plain: "寫一句話：請在終端機輸入 git status 查看狀態。其中「git status」用行內程式碼（行內註解）標示" },
+        { pts: 2, html: '一個標明語言為 <span class="lit">html</span> 的<strong>程式碼區塊</strong>，內容共兩行：<br>第一行 <span class="lit">&lt;h1&gt;歡迎光臨&lt;/h1&gt;</span><br>第二行 <span class="lit">&lt;p&gt;社團成果展&lt;/p&gt;</span>',
+          plain: "一個標明語言為 html 的程式碼區塊，內容共兩行：第一行 <h1>歡迎光臨</h1>，第二行 <p>社團成果展</p>" },
+        { pts: 1, html: '寫出文字 <span class="lit">本活動由學生會贊助</span>，在後面加上<strong>註腳</strong>，註腳的內容是 <span class="lit">經費來自學生會年度預算</span>',
+          plain: "寫出文字「本活動由學生會贊助」，在後面加上註腳，註腳的內容是「經費來自學生會年度預算」" }
+      ]
+    }
+  ]
+};
+// 大題分數 = 各小題配分加總
+EXAM.questions.forEach((q) => { q.points = q.items.reduce((s, it) => s + it.pts, 0); });
+EXAM.total = EXAM.questions.reduce((s, q) => s + q.points, 0);
+EXAM.subtitle = "共 " + EXAM.questions.length + " 題，滿分 " + EXAM.total + " 分（每一小題的配分標示在題目後方）";
+</script>
+
+<script>
+(function () {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  const STORE = EXAM.key;
+  let state = { student: { cls: "", id: "", name: "" }, answers: {}, paste: {}, startedAt: null, updatedAt: null };
+  let dirtySinceExport = false;
+
+  // ---------- storage (best effort) ----------
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORE);
+      if (raw) {
+        const s = JSON.parse(raw);
+        if (s && typeof s === "object") state = Object.assign(state, s);
+      }
+    } catch (e) { /* storage unavailable: work in memory */ }
+  }
+  function save() {
+    try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) { /* ignore */ }
+  }
+
+  // ---------- render ----------
+  $("examTitle").textContent = EXAM.title;
+  $("examSub").textContent = EXAM.subtitle;
+  document.title = EXAM.title;
+
+  const host = $("questions");
+  EXAM.questions.forEach((q) => {
+    const sec = document.createElement("section");
+    sec.className = "card";
+    sec.setAttribute("aria-labelledby", q.id + "-h");
+    sec.innerHTML =
+      '<div class="q-head"><h2 id="' + q.id + '-h">' + q.title + '</h2><span class="pts">' + q.points + ' 分</span></div>' +
+      '<p class="q-intro">' + q.intro + '</p>' +
+      '<ol class="req">' + q.items.map((it) => {
+        const tag = ' <span class="ipts">（' + it.pts + ' 分）</span>';
+        const i = it.html.indexOf("<ul>");
+        return "<li>" + (i < 0 ? it.html + tag : it.html.slice(0, i) + tag + it.html.slice(i)) + "</li>";
+      }).join("") + "</ol>" +
+      '<textarea id="' + q.id + '" spellcheck="false" autocapitalize="off" autocomplete="off" aria-labelledby="' + q.id + '-h"></textarea>' +
+      '<div class="meta"><span>Markdown 原始語法</span><span id="' + q.id + '-count">0 字</span></div>';
+    host.appendChild(sec);
+  });
+
+  load();
+  $("sClass").value = state.student.cls || "";
+  $("sId").value = state.student.id || "";
+  $("sName").value = state.student.name || "";
+  EXAM.questions.forEach((q) => {
+    const ta = $(q.id);
+    ta.value = state.answers[q.id] || "";
+    updateCount(q.id);
+  });
+  updateStatus();
+
+  // ---------- events ----------
+  function touch() {
+    if (!state.startedAt) state.startedAt = new Date().toISOString();
+    state.updatedAt = new Date().toISOString();
+    dirtySinceExport = true;
+    save();
+    updateStatus();
+  }
+  [["sClass", "cls"], ["sId", "id"], ["sName", "name"]].forEach(([el, k]) => {
+    $(el).addEventListener("input", (e) => { state.student[k] = e.target.value; touch(); });
+  });
+
+  EXAM.questions.forEach((q) => {
+    const ta = $(q.id);
+    ta.addEventListener("input", () => { state.answers[q.id] = ta.value; updateCount(q.id); touch(); });
+    ta.addEventListener("paste", () => { state.paste[q.id] = (state.paste[q.id] || 0) + 1; save(); });
+    ta.addEventListener("keydown", (e) => {
+      if (e.key !== "Tab" || e.ctrlKey || e.altKey || e.metaKey) return;
+      e.preventDefault();
+      const s = ta.selectionStart, end = ta.selectionEnd, v = ta.value;
+      if (!e.shiftKey && s === end) {
+        insertText(ta, "    ");
+        return;
+      }
+      // indent / outdent selected lines
+      const lineStart = v.lastIndexOf("\n", s - 1) + 1;
+      const block = v.slice(lineStart, end);
+      const lines = block.split("\n");
+      const out = lines.map((l) => e.shiftKey ? l.replace(/^ {1,4}/, "") : "    " + l).join("\n");
+      ta.setSelectionRange(lineStart, end);
+      insertText(ta, out);
+      ta.setSelectionRange(lineStart, lineStart + out.length);
+    });
+  });
+
+  function insertText(ta, text) {
+    // execCommand keeps the browser's undo history; fall back to setRangeText
+    let ok = false;
+    try { ok = document.execCommand("insertText", false, text); } catch (e) { ok = false; }
+    if (!ok) {
+      ta.setRangeText(text, ta.selectionStart, ta.selectionEnd, "end");
+      ta.dispatchEvent(new Event("input"));
+    }
+  }
+
+  function updateCount(id) {
+    const n = Array.from($(id).value).length;
+    $(id + "-count").textContent = n + " 字";
+  }
+  function answeredCount() {
+    return EXAM.questions.filter((q) => (state.answers[q.id] || "").trim() !== "").length;
+  }
+  function fmt(iso) {
+    if (!iso) return "—";
+    const d = new Date(iso), p = (n) => String(n).padStart(2, "0");
+    return d.getFullYear() + "/" + p(d.getMonth() + 1) + "/" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes()) + ":" + p(d.getSeconds());
+  }
+  function updateStatus() {
+    const n = answeredCount();
+    $("status").textContent = state.updatedAt
+      ? "已作答 " + n + " / " + EXAM.questions.length + " 題・自動暫存於 " + fmt(state.updatedAt).slice(11)
+      : "尚未開始作答";
+  }
+  function showMsg(text, kind) {
+    const m = $("msg");
+    m.textContent = text;
+    m.className = "msg show " + kind;
+    m.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  // ---------- export ----------
+  function requireStudent() {
+    if (!state.student.id.trim() || !state.student.name.trim()) {
+      showMsg("請先填寫學號和姓名，再匯出作答。", "err");
+      (state.student.id.trim() ? $("sName") : $("sId")).focus();
+      return false;
+    }
+    return true;
+  }
+  function fenceFor(text) {
+    const runs = text.match(/`+/g) || [];
+    const longest = runs.reduce((m, r) => Math.max(m, r.length), 0);
+    return "`".repeat(Math.max(4, longest + 1));
+  }
+  function buildMarkdown() {
+    const exported = new Date().toISOString();
+    const total = EXAM.total;
+    const L = [];
+    L.push("# " + EXAM.title + "｜作答紀錄", "");
+    L.push("| 項目 | 內容 |", "| --- | --- |");
+    L.push("| 班級 | " + (state.student.cls.trim() || "（未填）") + " |");
+    L.push("| 學號 | " + state.student.id.trim() + " |");
+    L.push("| 姓名 | " + state.student.name.trim() + " |");
+    L.push("| 開始作答 | " + fmt(state.startedAt) + " |");
+    L.push("| 匯出時間 | " + fmt(exported) + " |");
+    L.push("| 作答題數 | " + answeredCount() + " / " + EXAM.questions.length + " |");
+    L.push("| 滿分 | " + total + " |", "");
+    L.push("> 每題的「學生作答」是學生輸入的 Markdown 原始文字，外層的程式碼框只是用來保留原貌，不屬於作答內容。", "");
+    EXAM.questions.forEach((q) => {
+      const ans = state.answers[q.id] || "";
+      const fence = fenceFor(ans);
+      L.push("---", "");
+      L.push("## " + q.title.replace(/　/g, " ") + "（" + q.points + " 分）", "");
+      L.push("**題目要求**", "");
+      q.items.forEach((it, i) => L.push((i + 1) + ". " + it.plain + " （" + it.pts + " 分）"));
+      (q.notes || []).forEach((t) => L.push("- 補充要求：" + t));
+      L.push("", "**學生作答**", "");
+      if (ans.trim() === "") {
+        L.push("（未作答）");
+      } else {
+        L.push(fence + "markdown", ans.replace(/\s+$/, ""), fence);
+      }
+      L.push("", "字數：" + Array.from(ans).length + "　貼上次數：" + (state.paste[q.id] || 0), "");
+    });
+    return L.join("\n");
+  }
+  function safeName(s) { return s.trim().replace(/[\\/:*?"<>|\s]+/g, "_"); }
+  function download(content, ext, mime) {
+    const name = safeName(state.student.id) + "_" + safeName(state.student.name) + "_" + (EXAM.fileTag || "Markdown測驗") + "." + ext;
+    const blob = new Blob(["﻿" + content], { type: mime + ";charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    return name;
+  }
+  function warnEmpty() {
+    const n = answeredCount();
+    return n < EXAM.questions.length ? "（注意：還有 " + (EXAM.questions.length - n) + " 題沒有作答）" : "";
+  }
+
+  $("btnMd").addEventListener("click", () => {
+    if (!requireStudent()) return;
+    const name = download(buildMarkdown(), "md", "text/markdown");
+    dirtySinceExport = false;
+    showMsg("已下載「" + name + "」，請把這個檔案交給老師。" + warnEmpty(), "ok");
+  });
+  $("btnClear").addEventListener("click", () => {
+    if (!confirm("確定要清除全部作答內容嗎？清除後無法復原。")) return;
+    state = { student: { cls: "", id: "", name: "" }, answers: {}, paste: {}, startedAt: null, updatedAt: null };
+    try { localStorage.removeItem(STORE); } catch (e) { /* ignore */ }
+    ["sClass", "sId", "sName"].forEach((id) => { $(id).value = ""; });
+    EXAM.questions.forEach((q) => { $(q.id).value = ""; updateCount(q.id); });
+    dirtySinceExport = false;
+    $("msg").className = "msg";
+    updateStatus();
+  });
+
+  window.addEventListener("beforeunload", (e) => {
+    if (dirtySinceExport && answeredCount() > 0) { e.preventDefault(); e.returnValue = ""; }
+  });
+})();
+</script>
+</body>
+</html>
